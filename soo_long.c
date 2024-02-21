@@ -7,6 +7,27 @@
 #include "libft/libft.h"
 
 
+char **mab_spli;
+int y = 0;
+int x = 0;
+int player_x = 0;
+int player_y = 0;
+int height = 0;
+int width = 0;
+	
+char *allmap;
+int line_width;
+int line_number =  0;
+void *mlx;
+char *temp = NULL;
+int height_map = 1;
+int temp_width = 0;
+int width_map = 0;
+void *player_img;
+void *route_img;
+void *exit_img;
+void *win;
+int coin_i = 0;
 
 static int	ft_countword(char const *s, char c)
 {
@@ -94,66 +115,89 @@ char	**ft_split(char const *s, char c)
 	return (array);
 }
 
-void move_player(int key, void *mlx, void *win, char **map, int player_x, int player_y) {
-    int new_x = player_x;
-    int new_y = player_y;
+void move_player(int direction, int width_map, int height_map, char **map_split)
+{
+    int old_x = player_x;
+    int old_y = player_y;
 
-    // Determine the new position based on the key pressed
-    if (key == 126 && map[player_y - 1][player_x] != '1') // Up arrow key
-        new_y--;
-    else if (key == 125 && map[player_y + 1][player_x] != '1') // Down arrow key
-        new_y++;
-    else if (key == 123 && map[player_y][player_x - 1] != '1') // Left arrow key
-        new_x--;
-    else if (key == 124 && map[player_y][player_x + 1] != '1') // Right arrow key
-        new_x++;
-
-    // Check if the new position is valid
-    if (map[new_y][new_x] != '1') {
-        // Erase the player from the current position
-        mlx_put_image_to_window(mlx, win, route_img, player_x * 50, player_y * 50);
-        
-        // Update the player's position
-        player_x = new_x;
-        player_y = new_y;
-
-        // Draw the player at the new position
-        mlx_put_image_to_window(mlx, win, player_img, player_x * 50, player_y * 50);
+    if (direction ==  0)
+	{  //lfo9
+        if (player_y >  0 && map_split[player_y -  1][player_x] != '1' && !(map_split[player_y - 1][player_x] == 'E' && coin_i > 0))
+		{
+            player_y--;
+        }
     }
+	else  if (direction ==  1)
+	{  //lte7t
+        if (player_y < height_map -  1 && map_split[player_y +  1][player_x] != '1' && !(map_split[player_y + 1][player_x] == 'E' && coin_i > 0)) {
+            player_y++;
+        }
+    }
+	else if (direction ==  2)
+	{  //lisser
+        if (player_x >  0 && map_split[player_y][player_x -  1] != '1' && !(map_split[player_y][player_x - 1] == 'E' && coin_i > 0))
+		{
+            player_x--;
+        }
+    }
+	else if (direction ==  3)
+	{  //limmen
+        if (player_x < width_map -  1 && map_split[player_y][player_x +  1] != '1' && !(map_split[player_y][player_x + 1] == 'E' && coin_i > 0)) {
+            player_x++;
+        }
+    }
+	if (map_split[player_y][player_x] == 'E' && coin_i <= 0)
+	{
+    	mlx_put_image_to_window(mlx, win, route_img, old_x *  50, old_y *  50); // Erase the player from the old position
+    	mlx_put_image_to_window(mlx, win, exit_img, player_x *  50, player_y *  50);
+		exit(0); // Draw the player at the new position
+	}
+	else
+	{
+		if (map_split[player_y][player_x] == 'C')
+			coin_i--;
+		printf("%d\n", coin_i);
+		map_split[player_y][player_x] = '0';
+		mlx_put_image_to_window(mlx, win, route_img, old_x *  50, old_y *  50); // Erase the player from the old position
+    	mlx_put_image_to_window(mlx, win, player_img, player_x *  50, player_y *  50); 
+
+	}
+    // Redraw the map and the player
 }
 
-
-int key_handle(int key, void *ptr)
+//chat
+int key_handle(int key)
 {
+    int w = 13;
+    int s = 1;
+    int a = 0;
+    int d = 2;
 
-    if (key == 53)
-    {
-        printf("EXIT\n");
+    // Call the move_player function with the appropriate parameters
+    if (key == w) {
+        move_player(0, width_map, height_map, mab_spli);
+    } else if (key == s) {
+        move_player(1, width_map, height_map, mab_spli);
+    } else if (key == a) {
+        move_player(2, width_map, height_map, mab_spli);
+    } else if (key == d) {
+        move_player(3, width_map, height_map, mab_spli);
+    } else if (key == 53) {
         exit(0);
     }
+
     return (0);
 }
 
-int main (int argc, char **argv)
+
+int main (void)
 {
-	int y = 0;
-	int x = 0;
-	int height = 0;
-	int width = 0;
-	char *new;
-	int c = 1;
 	int fd = open ("map.ber", O_RDWR);
-	char *allmap;
-	int line_width;
-	int line_number =  0;
-	void *mlx = mlx_init();
-	char *temp = NULL;
+	mlx = mlx_init();
 	if (!mlx)
 		return (1);
 	allmap = get_next_line(fd);
-	int height_map = 1;
-	int temp_width = 0;
-	int width_map = 0;
+
 	while (allmap)
 	{
 		temp = ft_strjoin(temp, allmap);
@@ -164,6 +208,7 @@ int main (int argc, char **argv)
 
 	while (temp[i] != '\0')
 	{
+		// printf("%c", temp[i]);
 		if (temp[i] == '\n' || temp[i] == '\0')
 		{
 			++height_map;
@@ -173,43 +218,50 @@ int main (int argc, char **argv)
 		if(width_map == 0)
 			width_map = temp_width;
 		else if (width_map != temp_width)
-			return 1;
+			return (write(1, "Error\n", 6), 1);
 		i++;
 	}
 	if (temp[i - 1] == '\n') {
+		write(1, "Error\n", 6);
         return 1;
     }
 	width_map -= 1;
+	
+	mab_spli = ft_split(temp, '\n');
+	while (y < height_map)
+	{
+		x = 0;
+		while (x < width_map)
+		{
+			if (mab_spli[y][x] == 'P')
+			{
+				player_y = y;
+				player_x = x;
+				break;
+			}
+			x++;
+		}
+		if (mab_spli[y][x] == 'P')
+				break;
+		y++;
+	}
 
-
-	// allmap = get_next_line(fd);
-
-	// int width_map = strlen(allmap) - 1;
-	// // int height_map = 1;
-
-	// // while (allmap)
-	// // {
-	// // 	allmap = get_next_line(fd);
-	// // 	if(allmap == NULL)
-	// // 		break;
-	// // 	height_map++;
-	// // }
 	close(fd);
 	allmap = NULL;
 	fd = open ("map.ber", O_RDWR);
-	void *win = mlx_new_window(mlx, width_map * 50, height_map * 50, "so_long");
+	win = mlx_new_window(mlx, width_map * 50, height_map * 50, "so_long");
 
-	void *player_img = mlx_xpm_file_to_image(mlx, "so_long/Graphic/player.xpm", &width , &height);
-	void *route_img = mlx_xpm_file_to_image(mlx, "so_long/Graphic/texturee.xpm", &width , &height);
+	player_img = mlx_xpm_file_to_image(mlx, "so_long/Graphic/player.xpm", &width , &height);
+	route_img = mlx_xpm_file_to_image(mlx, "so_long/Graphic/texturee.xpm", &width , &height);
 	void *wall_img = mlx_xpm_file_to_image(mlx, "so_long/Graphic/wall1708384213.xpm", &width , &height);
-	void *exit_img = mlx_xpm_file_to_image(mlx, "so_long/Graphic/Door.xpm", &width , &height);
+	exit_img = mlx_xpm_file_to_image(mlx, "so_long/Graphic/Door.xpm", &width , &height);
 	void *coin_img = mlx_xpm_file_to_image(mlx, "so_long/Graphic/coin.xpm", &width , &height);
-
-	while (line_number < height_map * 50)
+	while (line_number < height_map)
 	{
-		line_width= 0;
+		
 		allmap = get_next_line(fd);
-		while (allmap && line_width < width_map * 50)
+		line_width= 0;
+		while (allmap != NULL && line_width < width_map)
 		{
 			if(allmap[line_width] == '0')
 				mlx_put_image_to_window(mlx, win, route_img, line_width * 50, line_number * 50);
@@ -220,14 +272,19 @@ int main (int argc, char **argv)
 			else if (allmap[line_width] == 'E')
 				mlx_put_image_to_window(mlx, win, exit_img, line_width * 50, line_number * 50);
 			else if (allmap[line_width] == 'C')
+			{
+				coin_i++;
+				// printf("hello");
 				mlx_put_image_to_window(mlx, win, coin_img, line_width * 50, line_number * 50);
+
+			}
 			line_width++;
 		}
-		printf("Line %d: %s\n", line_number, allmap);
 		line_number++;
 		free(allmap);
 		allmap = NULL;
 	}
+
 	mlx_key_hook(win, key_handle, mlx);
 	mlx_loop(mlx);
 }
