@@ -1,8 +1,12 @@
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include <unistd.h>
-# include <stdlib.h>
+#include <stdio.h> //delete it
+#include <stdlib.h> 
+#include <unistd.h> 
+#include <fcntl.h>
+#include <string.h> //delete it
+# include <mlx.h>
 
 //get_next_line
 # ifndef BUFFER_SIZE
