@@ -1,28 +1,30 @@
-NAME = libftprintf.a
+NAME = so_long
 
 CC = cc
 
 CFLAGS = -Wall -Wextra -Werror 
+
+INCLUDES = -I/opt/X11/include -Imlx
+
 RM = rm -f
 
-SRC = ft_printf.c ft_putchar.c ft_puthexalow.c ft_putstr.c \
-	  ft_printadd.c ft_putdec.c ft_puthexaupper.c ft_putudec.c
+SRC = so_long.c ft_putdec.c ft_split.c get_next_line.c get_next_line_utils.c \
+	  ft_putchar.c ft_putstr.c
 
 OBJ = $(SRC:.c=.o)
 
-all : $(NAME)
+all: $(NAME)
 
 $(NAME): $(OBJ)
-	ar rc $(NAME) $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -lmlx -framework OpenGL -framework AppKit -o $(NAME)
 
-%.o: %.c ft_printf.h
-	$(CC) $(CFLAGS) -o $@ -c $<
+%.o: %.c so_long.h
+		 $(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJ)
+		$(RM) $(OBJ) 
 
 fclean: clean
-	$(RM) $(NAME)
+		$(RM) $(NAME)
 
 re: fclean all
-
