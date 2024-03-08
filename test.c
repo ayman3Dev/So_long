@@ -1,63 +1,61 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
-#include <termios.h>
-#include <unistd.h>
+#include <string.h>
 
-int playerX = 10;
-int playerY = 10;
+#define p_y 5
+#define p_x 16
 
-void clearScreen() {
-    printf("\033[H\033[J");  // ANSI escape code to clear the screen
+char map_2d[p_y][p_x + 1] = {
+    "111111111111111",
+    "100010000000011",
+    "100P10000000111",
+    "1C00000000000E1",
+    "111111111111111"
+};
+
+bool isValid(int row, int col, char temp[p_y][p_x]) {
+    return (row >= 0 && row < p_y && col >= 0 && col < p_x && map_2d[row][col] != '1' && temp[row][col] == 0);
 }
 
-void gotoxy(int x, int y) {
-    printf("\033[%d;%dH", y, x);  // ANSI escape code to move the cursor to (x, y)
-}
+void ft_check_access(int row, int col, char temp[p_y][p_x]) {
+    if (!isValid(row, col, temp))
+        return;
 
-void drawPlayer() {
-    gotoxy(playerX, playerY);
-    printf("P");
-}
+    temp[row][col] = 1;
 
-void handleInput() {
-    struct termios oldt, newt;
-    int ch;
-
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-
-    ch = getchar();
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-
-    clearScreen();
-
-    switch (ch) {
-        case 27:  // ESC key
-            exit(0);
-            break;
-        case 'a':
-            playerX--;
-            break;
-        case 'd':
-            playerX++;
-            break;
-        case 'w':
-            playerY--;
-            break;
-        case 's':
-            playerY++;
-            break;
-    }
-
-    drawPlayer();
+    ft_check_access(row + 1, col, temp);
+    ft_check_access(row - 1, col, temp);
+    ft_check_access(row, col + 1, temp);
+    ft_check_access(row, col - 1, temp);
 }
 
 int main() {
-    while (1) {
-        handleInput();
+    int i, j;
+
+    printf("Original map_2d:\n");
+    for (i = 0; i < p_y; i++) {
+        printf("%s\n", map_2d[i]);
+    }
+
+    char temp[p_y][p_x] = {0};
+
+    for (i = 0; i < p_y; i++) {
+        for (j = 0; j < p_x; j++) {
+            if (map_2d[i][j] == 'P') {
+                
+            }
+        }
+    }
+    ft_check_access(i, j, temp);
+    printf("\nmap_2d after flood fill:\n");
+    for (i = 0; i < p_y; i++) {
+        for (j = 0; j < p_x; j++) {
+            if (temp[i][j] != '\0' && (map_2d[i][j] == '0')) {
+                map_2d[i][j] = 'V';
+            }
+        }
+        printf("%s\n", map_2d[i]);
     }
 
     return 0;
