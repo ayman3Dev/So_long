@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaaraba <aaaraba@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/05 23:06:49 by aaaraba           #+#    #+#             */
+/*   Updated: 2024/03/05 23:07:31 by aaaraba          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
 static int	ft_countword(char const *s, char c)
@@ -63,7 +75,7 @@ char	**ft_split(char const *s, char c)
 	int		size;
 	int		i;
 
-	if (s == NULL) 
+	if (s == NULL)
 		return (NULL);
 	size = ft_countword(s, c);
 	array = (char **)malloc(sizeof(char *) * (size + 1));
