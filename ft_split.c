@@ -6,7 +6,7 @@
 /*   By: aaaraba <aaaraba@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 23:06:49 by aaaraba           #+#    #+#             */
-/*   Updated: 2024/03/05 23:07:31 by aaaraba          ###   ########.fr       */
+/*   Updated: 2024/03/13 21:05:14 by aaaraba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	ft_countword(char const *s, char c)
 	return (size);
 }
 
-static void	ft_free(char **array, int i)
+static void	ft_free_split(char **array, int i)
 {
 	while (i)
 	{
@@ -89,7 +89,7 @@ char	**ft_split(char const *s, char c)
 		array[i] = allocate_string(s, 0, len_worlds(s, c));
 		if (array[i] == NULL)
 		{
-			ft_free(array, i);
+			ft_free_split(array, i);
 			return (0);
 		}
 		s = s + len_worlds(s, c);

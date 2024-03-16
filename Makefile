@@ -1,10 +1,8 @@
 NAME = so_long
 
-CC = gcc
+CC = cc
 
 CFLAGS = -Wall -Wextra -Werror
-
-INCLUDES = -I/opt/X11/include -Imlx
 
 RM = rm -f
 
