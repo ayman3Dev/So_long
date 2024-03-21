@@ -6,7 +6,7 @@
 /*   By: aaaraba <aaaraba@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 22:57:01 by aaaraba           #+#    #+#             */
-/*   Updated: 2024/03/15 02:15:18 by aaaraba          ###   ########.fr       */
+/*   Updated: 2024/03/19 19:18:42 by aaaraba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ void	move_player_right(t_all *all, t_size *size)
 		&& size->coin > 0))
 	{
 		size->p_x--;
+		ft_putdec(++all->compte_total);
+		ft_putchar('\n');
 	}
 	ft_change_imgs(all, size);
 }
@@ -78,6 +80,8 @@ char	*ft_get_allmap(char *argv_one, t_all *all)
 	all->allmap = NULL;
 	all->map_2d = NULL;
 	all->map_2d_copy = NULL;
+	if (ft_strcmp(argv_one + ft_strlen(argv_one) - 4, ".ber") != 0)
+		return (NULL);
 	all->fd = open (argv_one, O_RDWR);
 	if (all->fd < 0)
 		return (NULL);

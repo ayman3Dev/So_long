@@ -6,7 +6,7 @@
 /*   By: aaaraba <aaaraba@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 22:57:10 by aaaraba           #+#    #+#             */
-/*   Updated: 2024/03/15 02:04:39 by aaaraba          ###   ########.fr       */
+/*   Updated: 2024/03/20 20:25:07 by aaaraba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,17 @@
 
 void	ft_position(t_all *all)
 {
-	all->size.p_y = -1;
-	while (all->map_2d[++all->size.p_y] != NULL)
+	all->size.p_y = 1;
+	while (all->map_2d[all->size.p_y] != NULL)
 	{
-		all->size.p_x = -1;
-		while (all->map_2d[all->size.p_y][++all->size.p_x] != '\0')
+		all->size.p_x = 1;
+		while (all->map_2d[all->size.p_y][all->size.p_x] != '\0')
 		{
 			if (all->map_2d[all->size.p_y][all->size.p_x] == 'P')
 				return ;
+			all->size.p_x++;
 		}
+		all->size.p_y++;
 	}
 }
 

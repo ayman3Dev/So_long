@@ -6,7 +6,7 @@
 /*   By: aaaraba <aaaraba@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 21:05:22 by aaaraba           #+#    #+#             */
-/*   Updated: 2024/03/15 02:34:42 by aaaraba          ###   ########.fr       */
+/*   Updated: 2024/03/20 01:19:48 by aaaraba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ size_t	ft_strlen(const char *s);
 int		ft_putchar(int c);
 int		ft_putdec(int n);
 int		ft_putstr(char *s);
+int		ft_strcmp(const char *s1, const char *s2);
 char	**ft_split(char const *s, char c);
 void	move_player_down(t_all *all, t_size *size);
 void	move_player_up(t_all *all, t_size *size);
@@ -72,7 +73,7 @@ void	ft_position(t_all *all);
 void	ft_change_imgs(t_all *all, t_size *size);
 char	*ft_get_allmap(char *argv_one, t_all *all);
 int		ft_check(char *allmap, t_size *size);
-int		ft_check_lenght(char *allmap);
+int		ft_check_lenght(t_all *all);
 char	**ft_checkmap(t_all *all);
 int		ft_init(t_all *all);
 int		ft_check_access(t_all *all, int x, int y);

@@ -6,18 +6,24 @@
 /*   By: aaaraba <aaaraba@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/05 21:04:31 by aaaraba           #+#    #+#             */
-/*   Updated: 2024/03/16 05:14:33 by aaaraba          ###   ########.fr       */
+/*   Updated: 2024/03/21 05:47:48 by aaaraba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
+#include <stdio.h>
 
+static void v()
+{
+	system("leaks so_long");	
+}
 int	key_handle(int key, t_all *all)
 {
+	printf("test key: %d", key);
 	if (key == 53)
 	{
-		write (1, "EXIT\n", 5);
 		ft_free(all->map_2d_copy);
+		atexit(v);
 		exit(0);
 	}
 	else if (key == 13 || key == 126)
@@ -89,21 +95,17 @@ void	ft_free_all(t_all *all)
 	ft_free(all->map_2d);
 	ft_free(all->map_2d_copy);
 	write(1, "Error\n", 6);
+	atexit(v);
 	exit(1);
-}
-
-void	v(void)
-{
-	system("leaks so_long");
 }
 
 int	main(int argc, char **argv)
 {
 	t_all	all;
 
-	atexit(v);
 	if (argc != 2)
 		return (1);
+	atexit(v);
 	all.allmap = ft_get_allmap(argv[1], &all);
 	if (all.allmap == NULL)
 		return (write(1, "Error\n", 6), 1);
@@ -116,9 +118,10 @@ int	main(int argc, char **argv)
 	if (ft_cheak_map_char(&all))
 		ft_free_all(&all);
 	ft_free(all.map_2d);
+	all.map_2d = NULL;
 	all.map_2d_copy = ft_split(all.allmap, '\n');
 	if (!all.map_2d_copy)
-		return (free(all.allmap), 1);
+		return (ft_free_all(&all), 1);
 	ft_affich_imgs(&all);
 	free(all.allmap);
 	mlx_hook(all.win, 2, 0, key_handle, &all);

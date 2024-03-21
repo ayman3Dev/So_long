@@ -6,11 +6,12 @@
 /*   By: aaaraba <aaaraba@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 21:02:22 by aaaraba           #+#    #+#             */
-/*   Updated: 2024/03/14 20:52:22 by aaaraba          ###   ########.fr       */
+/*   Updated: 2024/03/21 05:46:30 by aaaraba          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
+
 
 int	ft_check(char *allmap, t_size *size)
 {
@@ -22,11 +23,11 @@ int	ft_check(char *allmap, t_size *size)
 	i = -1;
 	while (allmap[++i] != '\0')
 	{
-		if ((allmap[i] == '\n' && allmap[i + 1] == '\n') || allmap[0] != '1')
-			return (write(1, "Error\n", 6), 1);
+		if ((allmap[i] == '\n' && allmap[i + 1] == '\n'))
+			return (write(1, "Error\nInvalid map\n", 18), 1);
 		if (allmap[i] != 'P' && allmap[i] != 'E' && allmap[i] != 'C'
 			&& allmap[i] != '\n' && allmap[i] != '0' && allmap[i] != '1')
-			return (write (1, "Error\n", 7), 1);
+			return (write (1, "Error\nInvalid map\n", 18), 1);
 		if (allmap[i] == 'P')
 			++size->player;
 		if (allmap[i] == 'C')
@@ -36,55 +37,47 @@ int	ft_check(char *allmap, t_size *size)
 	}
 	size->coin_check = size->coin;
 	if (size->player != 1 || size->coin < 1
-		|| size->door != 1 || allmap[--i] != '1')
-		return (write(1, "Error\n", 6), 1);
+		|| size->door != 1 || allmap[i - 1] == '\n')
+		return (write(1, "Error\nInvalid map\n", 18), 1);
 	return (0);
 }
 
-int	ft_check_lenght(char *allmap)
+int	ft_check_lenght(t_all *all)
 {
-	int	i;
-	int	j;
-	int	temp_width;
-	int	width_map;
-
-	i = 0;
-	j = 0;
-	temp_width = 0;
-	width_map = 0;
-	while (allmap[i] != '\0')
+	all->i = 0;
+	all->size.height = 0;
+	all->size.width = 0;
+	if (all->allmap[0] == '\n')
+		return (write(1, "Error\nInvalid map\n", 18), 1);
+	all->map_2d = ft_split(all->allmap, '\n');
+	all->size.width = ft_strlen(all->map_2d[0]);
+	while (all->map_2d[all->size.height] != NULL)
 	{
-		if (allmap[i] == '\n' || allmap[i] == '\0')
-		{
-			temp_width = i - j + 1;
-			j = i + 1;
-		}
-		if (width_map == 0)
-			width_map = temp_width;
-		else if (width_map != temp_width)
-			return (write(1, "Error\n", 6), 1);
-		i++;
+		if ((int)ft_strlen(all->map_2d[all->size.height]) != all->size.width)
+			return (write(1, "Error\nInvalid map\n", 18), 1);
+		all->size.height++;
+	}
+	if (all->size.height > 28 || all->size.width > 51)
+	{
+		free(all->allmap), ft_free(all->map_2d);
+		write (1, "map too long", 12);
+		exit(1);
 	}
 	return (0);
 }
 
 char	**ft_checkmap(t_all *all)
 {
-	all->size.height = 0;
-	all->size.width = 0;
 	if (ft_check(all->allmap, &all->size) != 0
-		|| ft_check_lenght(all->allmap) != 0)
+		|| ft_check_lenght(all) != 0)
 		return (NULL);
-	all->map_2d = ft_split(all->allmap, '\n');
-	all->size.width = ft_strlen(all->map_2d[0]);
-	while (all->map_2d[all->size.height] != NULL)
-		all->size.height++;
+	all->i = 0;
 	while (all->map_2d[0][all->i] != '\0'
 		&& all->map_2d[all->size.height - 1][all->i] != '\0')
 	{
 		if (all->map_2d[0][all->i] != '1'
 			|| all->map_2d[all->size.height - 1][all->i] != '1')
-			return (write(1, "Error\n", 6), NULL);
+			return (write(1, "Error\nInvalid map\n", 18), NULL);
 		all->i++;
 	}
 	all->j = -1;
@@ -92,7 +85,7 @@ char	**ft_checkmap(t_all *all)
 	{
 		if (all->map_2d[all->j][0] != '1'
 			|| all->map_2d[all->j][all->size.width - 1] != '1')
-			return (write(1, "Error\n", 6), NULL);
+			return (write(1, "Error\nInvalid map\n", 18), NULL);
 	}
 	return (all->map_2d);
 }
@@ -104,8 +97,6 @@ int	ft_cheak_map_char(t_all *all)
 
 	i = 0;
 	j = 0;
-	if (all->size.height == all->size.width)
-		return (1);
 	while (all->map_2d[i] != NULL)
 	{
 		j = 0;
@@ -148,3 +139,4 @@ int	ft_check_access(t_all *all, int x, int y)
 	}
 	return (0);
 }
+ 
